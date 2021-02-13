@@ -1,0 +1,7 @@
+#!/usr/bin/ansible-playbook
+---
+- hosts: all
+  gather_facts: yes
+  become: yes
+  roles:
+  - AnsibleRole_DBservice

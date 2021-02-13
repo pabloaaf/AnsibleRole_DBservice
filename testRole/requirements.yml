@@ -1,0 +1,7 @@
+- src: https://github.com/pabloaaf/AnsibleRole_DBservice.git
+  version: master
+  name: AnsibleRole_DBservice
+- src: https://github.com/pabloaaf/DBService.git
+  version: master
+  name: dbServiceFiles
+# ansible-galaxy install -r requirements.yml -p roles/
