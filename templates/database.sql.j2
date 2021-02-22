@@ -1,0 +1,13 @@
+CREATE DATABASE IF NOT EXISTS `{{mysql_db_name}}`;
+
+USE `{{mysql_db_name}}`;
+
+DROP TABLE IF EXISTS `{{mysql_db_table}}`;
+
+CREATE TABLE `{{mysql_db_table}}` (
+  `logdata` datetime DEFAULT NULL,
+  `id` varchar(20) DEFAULT NULL,
+  `temperatura` varchar(20) DEFAULT NULL,
+  `humedad` varchar(20) DEFAULT NULL,
+  `suelo` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

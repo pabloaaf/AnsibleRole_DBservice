@@ -1,0 +1,60 @@
+- name: Update and upgrade apt packages
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400 #One day
+
+- name: install apache2
+  apt: 
+    name: apache2 
+    update_cache: yes 
+    state: latest
+
+- name: install mariadb-server
+  apt: 
+    name: mariadb-server 
+    update_cache: yes 
+    state: latest
+
+- name: install mariadb-client
+  apt: 
+    name: mariadb-client 
+    update_cache: yes 
+    state: latest
+
+- name: install php
+  apt:
+    name: 
+      - php7.2
+      - libapache2-mod-php7.2
+      - php7.2-mysql
+      - php-mbstring php7.2-mbstring
+      - php-gettext
+    state: latest
+    update_cache: true
+  become: true
+
+#- name: Start and enable service
+#  service: name=mysql state=started enabled=yes
+
+- name: Run mysql_secure_installation
+  import_tasks: mysql_secure_installation.yml
+  when: mysql_password is defined
+  notify:
+    - restart apache2
+
+- name: create db conexion
+  template:
+    src: config.inc.php.j2
+    dest: /var/www/config.inc.php 
+
+- name: move php files to apache folder
+  copy:
+    src: "{{ item }}"
+    dest: /var/www/
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - readData.php
+    - writeData.php
