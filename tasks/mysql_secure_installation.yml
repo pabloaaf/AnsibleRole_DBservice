@@ -6,13 +6,20 @@
 # UPDATE mysql.user SET Password=PASSWORD('mysecret') WHERE User='root';
 # FLUSH PRIVILEGES;
 
+- name: Determine required MySQL Python libraries.
+  set_fact:
+    deb_mysql_python_package: "{% if 'python3' in ansible_python_interpreter|default('') %}python3-mysqldb{% else %}python-mysqldb{% endif %}"
+
+- name: Ensure MySQL Python libraries are installed.
+  apt: "name={{ deb_mysql_python_package }} state=present"
+
 - name: Set root Password
   mysql_user: 
-    login_password: {{ mysql_password }}
+    login_password: '{{ mysql_password }}'
     check_implicit_admin: yes
-    name: {{ mysql_user }}
-    host: {{ item }}
-    password: {{ mysql_password }}
+    name: '{{ mysql_user }}'
+    host: '{{ item }}'
+    password: '{{ mysql_password }}'
     state: present 
   with_items:
     - localhost
@@ -51,16 +58,16 @@
 
 - name: create nodes database
   mysql_db: 
-    name: {{mysql_db_name}}
+    name: '{{mysql_db_name}}'
     state: present
   register: db_state
 
 - name: create db table
   mysql_db: 
-    name: {{mysql_db_name}}
+    name: '{{mysql_db_name}}'
     state: import
     target: /tmp/database.sql
-  when: {{ db_state.changed }}
+  when: db_state.changed
 
 - name: test database is absent
   mysql_db: 
